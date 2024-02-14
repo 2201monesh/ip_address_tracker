@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import 'leaflet/dist/leaflet.css'
+import { Icon } from "leaflet";
 
 export default function Home() {
 
@@ -10,9 +11,6 @@ export default function Home() {
   const [ip, setIp] = useState(null);
 
   // using Abstract GeolocationAPI - 
-
-  // const apiURL = 'https://ipgeolocation.abstractapi.com/v1/'
-  // const apiKey = 'b753b0662a634ff8862c531dbfd14303';
 
   const apiURL = process.env.NEXT_PUBLIC_API_URL;
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
@@ -33,6 +31,11 @@ export default function Home() {
   }
 };
 
+  const customIcon = new Icon({
+    iconUrl: "https://cdn-icons-png.flaticon.com/128/484/484167.png",
+    iconSize: [38, 38]
+  })
+
   return (
     <div>
       <input type="text" onChange={(e) => setIp(e.target.value)} />
@@ -44,7 +47,7 @@ export default function Home() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-      <Marker position={[lat, long]} />
+      <Marker position={[lat, long]}icon={customIcon} />
       </MapContainer>}
     </div>
   );
