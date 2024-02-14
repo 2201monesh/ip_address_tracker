@@ -1,29 +1,35 @@
 "use client"
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Home() {
 
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
+  const [ip, setIp] = useState(null);
 
-  const geolocationAPI = navigator.geolocation;
+  // using Abstract GeolocationAPI - 
 
-  const getUserCoordinates = () => {
-    if (!geolocationAPI) {
-      setError('Geolocation API is not available in your browser!')
-    } else {
-      geolocationAPI.getCurrentPosition((position) => {
-        const { coords } = position;
-        setLat(coords.latitude);
-        setLong(coords.longitude);
-      }, (error) => {
-        setError('Something went wrong getting your position!')
-      })
+  const apiURL = 'https://ipgeolocation.abstractapi.com/v1/'
+  const apiKey = 'b753b0662a634ff8862c531dbfd14303';
+
+  const getUserLocationFromAPI = async () => {
+  try {
+    const response = await fetch(`${apiURL}?api_key=${apiKey}&ip_address=${ip}`);
+    
+    if (!response.ok) {
+      throw new Error('Something went wrong getting Geolocation from API!');
     }
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    setError(error.message);
   }
+};
 
   useEffect(() => {
-    getUserCoordinates();
+    // getUserLocationFromAPI();
   }, [])
 
   return (
