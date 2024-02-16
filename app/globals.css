@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 
+*{
+    padding: 0;
+    margin: 0;
+}
+
 .leaflet-container{
-    height: 50vh;
+    height: 60vh;
 }
