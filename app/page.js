@@ -1,9 +1,16 @@
 "use client"
-import { useState } from "react";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { useEffect, useMemo, useState } from "react";
+// import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import 'leaflet/dist/leaflet.css'
 import { Icon } from "leaflet";
 import { MdKeyboardArrowRight } from "react-icons/md";
+import dynamic from 'next/dynamic';
+
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+
+// const MapContainer = dynamic(() => import("react-leaflet").then((module) => module.MapContainer), { ssr: false });
+// const TileLayer = dynamic(() => import("react-leaflet").then((module) => module.TileLayer), { ssr: false });
+// const Marker = dynamic(() => import("react-leaflet").then((module) => module.Marker), { ssr: false });
 
 export default function Home() {
 
@@ -20,6 +27,10 @@ export default function Home() {
   const apiURL = process.env.NEXT_PUBLIC_API_URL;
   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+  });
+
   const getUserLocationFromAPI = async () => {
   try {
     const response = await fetch(`${apiURL}?api_key=${apiKey}&ip_address=${ip}`);
@@ -35,6 +46,7 @@ export default function Home() {
     setCity(data.city);
     setTimezone(data.timezone.name);
     setIsp(data.connection.isp_name);
+
   } catch (error) {
     console.log(error.message);
   }
@@ -44,6 +56,7 @@ export default function Home() {
     iconUrl: "https://cdn-icons-png.flaticon.com/128/484/484167.png",
     iconSize: [38, 38]
   })
+
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -73,15 +86,33 @@ export default function Home() {
         </div>
       </div>
       
-      <div className="w-screen">
-        {lat && <MapContainer center={[lat, long]} zoom={13} >
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        />
-         <Marker position={[lat, long]}icon={customIcon} />
-        </MapContainer>}
-        {!lat && <p className="flex justify-center">Map will we shown here</p>}
+
+       {/* <div className="w-screen">
+        {lat ? (
+          <MapContainer center={[lat, long]} zoom={13}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <Marker position={[lat, long]} icon={customIcon} />
+          </MapContainer>
+        ) : (
+          <p className="flex justify-center">Map will be shown here</p>
+        )}
+      </div> */}
+
+      <div className="h-96 w-screen">
+        {!isLoaded ? (
+        <h1>Loading...</h1>
+      ) : (
+        <GoogleMap
+          mapContainerClassName="map-container"
+          center={{lat: lat, lng: long}}
+          zoom={10}
+        >
+          <Marker position={{ lat: lat, lng: long }} />
+        </GoogleMap>
+      )}
       </div>
 
     </div>

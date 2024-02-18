@@ -11,3 +11,8 @@
 .leaflet-container{
     height: 60vh;
 }
+
+.map-container {
+    height: 100%;
+    width: 100%;
+}
