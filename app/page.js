@@ -1,7 +1,11 @@
 "use client"
+import React from 'react'
 import { useEffect, useState } from "react";
 import { MdKeyboardArrowRight } from "react-icons/md";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+// import { MapContainer, TileLayer, Marker } from "react-leaflet";
+// import 'leaflet/dist/leaflet.css'
+// import { Icon } from "leaflet";
+import Maps from '@/components/maps';
 
 export default function Home() {
 
@@ -15,12 +19,11 @@ export default function Home() {
 
   // using Abstract GeolocationAPI - 
 
-  // const apiURL = process.env.NEXT_PUBLIC_API_URL;
-  // const apiKey = process.env.NEXT_PUBLIC_API_KEY;
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
-  });
+  // useEffect(() => {
+  //   const apiURL = process.env.NEXT_PUBLIC_API_URL;
+  //   const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+  // }, [])
 
   const getUserLocationFromAPI = async () => {
   try {
@@ -37,12 +40,10 @@ export default function Home() {
     setCity(data.city);
     setTimezone(data.timezone.name);
     setIsp(data.connection.isp_name);
-
   } catch (error) {
     console.log(error.message);
   }
 };
-
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -72,19 +73,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="h-96 w-screen">
-        {!isLoaded ? (
-        <h1>Loading...</h1>
-      ) : (
-        <GoogleMap
-          mapContainerClassName="map-container"
-          center={{lat: lat, lng: long}}
-          zoom={10}
-        >
-          <Marker position={{ lat: lat, lng: long }} />
-        </GoogleMap>
-      )}
-      </div>
+       <Maps lat={lat} long={long} />
 
     </div>
   );
